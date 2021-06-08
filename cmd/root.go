@@ -32,17 +32,13 @@ var rootCmd = &cobra.Command{
 	Use:   "trnsl8",
 	Short: "An easy way to provide translation and language detection",
 	Long: `Using trnsl8 is easy!
-	Just tell us if you want to 'detect' what language a text is in
-		Or
-	Give us something to translate 'to' a certain language
-	
-	Usage:
-		trnsl8 detect -t <input>
-		trnsl8 to <language> -t <input>
+Just tell us if you want to 'detect' what language a text is in
+Or...
+Give us something to translate 'to' a certain language
 
-	Examples:
-		trnsl8 detect -t "Isto está em português brasileiro"
-		trnsl8 to japanese -t "I want this sentence in japanese"`,
+Examples:
+	trnsl8 detect "Isto está em português brasileiro"
+	trnsl8 to japanese "I want this sentence in japanese"`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {},
@@ -68,7 +64,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
