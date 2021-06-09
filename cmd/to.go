@@ -16,7 +16,11 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"strings"
+
+	"internal/translation_api"
 
 	"github.com/spf13/cobra"
 )
@@ -24,15 +28,19 @@ import (
 // toCmd represents the to command
 var toCmd = &cobra.Command{
 	Use:   "to",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Translates an input to a specified language code",
+	Long: `
+The trnsl8 'to' command expects you to provide a language code and the text you wish to be translated
+Examples:
+	trnsl8 to en "Quero traduzir esta frase"
+	trnsl8 to ja I want this sentence in japanese`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("to called")
+		if len(args) < 2 {
+			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 to'"))
+		} else {
+			text := strings.Join(args[1:], " ")
+			translation_api.TranslateToTargetLanguage(args[0], &text)
+		}
 	},
 }
 
