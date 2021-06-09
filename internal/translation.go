@@ -1,4 +1,4 @@
-package translation_api
+package api
 
 import (
 	"fmt"
@@ -10,27 +10,26 @@ import (
 
 var translateSession *translate.Translate
 
-func InitAWSTranslateSessionInstance() {
+func GetAWSTranslateSessionInstance() *translate.Translate {
 	if translateSession == nil {
-		translateSession = translate.New(session.Must(session.NewSession(
-			&aws.Config{
-				Region: aws.String("us-east-1"),
-			})))
+		translateSession = translate.New(session.Must(session.NewSession(&aws.Config{
+			Region: aws.String("us-east-1"),
+		})))
 	}
+	return translateSession
 }
 
 func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
 
-	InitAWSTranslateSessionInstance()
-
-	response, err := translateSession.Text(&translate.TextInput{
+	var session = GetAWSTranslateSessionInstance()
+	response, err := session.Text(&translate.TextInput{
 		SourceLanguageCode: aws.String("auto"),
 		TargetLanguageCode: aws.String(TARGET_LANGUAGE),
 		Text:               text,
 	})
 
 	if err != nil {
-		fmt.Println("Error executing trnsl8: \n", err)
+		fmt.Println("Error executing trnsl8 to: \n", err)
 	} else {
 		fmt.Println(response)
 	}

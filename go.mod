@@ -2,7 +2,7 @@ module trnsl8
 
 go 1.16
 
-replace internal/translation_api => ./internal/
+replace internal/api => ./internal/
 
 require (
 	github.com/aws/aws-sdk-go v1.38.57
@@ -19,6 +19,6 @@ require (
 	golang.org/x/sys v0.0.0-20210603125802-9665404d3644 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
-	internal/translation_api v1.0.0
+	internal/api v1.0.0
 
 )

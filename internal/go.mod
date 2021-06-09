@@ -1,4 +1,4 @@
-module translation_api
+module api
 
 go 1.16
 
