@@ -1,5 +1,5 @@
 # trnsl8
-trnsl8 is a CLI written in Go that allows users to translate text and detect the language of input through the use of AWS Translate and AWS Comprehend
+trnsl8 is a CLI written in Go (using Cobra package) that allows users to translate text and detect the language of input through the use of AWS Translate and AWS Comprehend
 
 ## Usage
 
