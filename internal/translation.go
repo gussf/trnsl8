@@ -22,7 +22,7 @@ func GetAWSTranslateSessionInstance() *translate.Translate {
 func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
 
 	var session = GetAWSTranslateSessionInstance()
-	response, err := session.Text(&translate.TextInput{
+	response, err := session.Tes(&translate.TextInput{
 		SourceLanguageCode: aws.String("auto"),
 		TargetLanguageCode: aws.String(TARGET_LANGUAGE),
 		Text:               text,
