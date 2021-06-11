@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -29,9 +30,22 @@ func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
 	})
 
 	if err != nil {
-		fmt.Println("Error executing trnsl8 to: \n", err)
+		fmt.Println("Error executing 'trnsl8 to': \n", err)
 	} else {
-		fmt.Println(response)
-	}
+		var parsedJson map[string]interface{}
 
+		var jsonbytes, _ = json.Marshal(response)
+		err := json.Unmarshal(jsonbytes, &parsedJson)
+
+		if err != nil {
+			fmt.Println(response)
+		}
+
+		translatedText := parsedJson["TranslatedText"]
+		sourceLanguageCode := parsedJson["SourceLanguageCode"]
+
+		fmt.Println("Source language-code:", sourceLanguageCode)
+		fmt.Println("Target language-code:", TARGET_LANGUAGE)
+		fmt.Println("Output:", translatedText)
+	}
 }
