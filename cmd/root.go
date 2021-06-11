@@ -31,11 +31,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "trnsl8",
 	Short: "An easy way to provide translation and language detection",
-	Long: `Using trnsl8 is easy!
-Just tell us if you want to 'detect' what language a text is in
-Or...
-Give us something to translate 'to' a certain language
-
+	Long: `CLI that allows detection and translation of text
 Examples:
 	trnsl8 detect "Isto está em português brasileiro"
 	trnsl8 to japanese "I want this sentence in japanese"`,
