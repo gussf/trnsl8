@@ -25,37 +25,43 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var fileToDetect = ""
+
 // detectCmd represents the detect command
 var detectCmd = &cobra.Command{
 	Use:   "detect",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Detects the dominant language in an input",
+	Long: `The trnsl8 'detect' command tries to determine the prevalent language in an input
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Examples:
+	trnsl8 detect "This is in english"`,
+
 	Run: func(cmd *cobra.Command, args []string) {
+
+		// --file flag was set, try to open and detect the text in the filepath
+		if fileToDetect != "" {
+			fmt.Println("Detecting most prevalent language in", fileToDetect, "...")
+			result, err := api.DetectDominantLanguageInFile(fileToDetect)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(result)
+			return
+		}
+
+		// --file flag was not set, detect text input from args
 		if len(args) == 0 {
 			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 detect'"))
 		} else {
 			input := strings.Join(args, " ")
-			api.DetectDominantLanguageIn(&input)
+			result, err := api.DetectDominantLanguageIn(&input)
+			fmt.Println(result, err)
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(detectCmd)
-	detectCmd.Flags().BoolP("verbose", "v", false, "Print additional info during detection")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// detectCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// detectCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	detectCmd.PersistentFlags().StringVarP(&fileToDetect, "file", "f", "", "Detect language in a specific file")
 }
