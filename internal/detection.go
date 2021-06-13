@@ -1,8 +1,11 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+
+	"trnsl8/model"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -20,24 +23,38 @@ func GetAWSComprehendSessionInstance() *comprehend.Comprehend {
 	return comprehendSession
 }
 
-func DetectDominantLanguageIn(input *string) (result string, err error) {
+func DetectDominantLanguageIn(input *string) model.DetectedLanguage {
+	var detectionResult = model.DetectedLanguage{"", 0}
 	var session = GetAWSComprehendSessionInstance()
+
 	response, err := session.DetectDominantLanguage(&comprehend.DetectDominantLanguageInput{
 		Text: input,
 	})
-	result = response.GoString()
-	return result, err
+
+	if err != nil {
+		fmt.Println("Error executing 'trnsl8 detect': \n", err)
+	} else {
+		var resultArray model.DetectedLanguagesList
+		var jsonbytes, _ = json.Marshal(response)
+		err := json.Unmarshal(jsonbytes, &resultArray)
+
+		if err != nil {
+			fmt.Println(err)
+			return detectionResult
+		}
+		detectionResult = resultArray.Languages[0]
+	}
+	return detectionResult
 
 }
 
-func DetectDominantLanguageInFile(filePath string) (result string, err error) {
+func DetectDominantLanguageInFile(filePath string) model.DetectedLanguage {
 
 	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return "", fmt.Errorf("failed to open file %s", filePath)
+		fmt.Println("failed to open file %s", filePath)
+		return model.DetectedLanguage{"", 0}
 	}
 	var dataString = string(dat)
-	result, err = DetectDominantLanguageIn(&dataString)
-	return result, err
-
+	return DetectDominantLanguageIn(&dataString)
 }

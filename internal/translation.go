@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"trnsl8/model"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/translate"
@@ -20,9 +22,10 @@ func GetAWSTranslateSessionInstance() *translate.Translate {
 	return translateSession
 }
 
-func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
-
+func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) model.TranslationResult {
+	var translationResult = model.TranslationResult{"", "", ""}
 	var session = GetAWSTranslateSessionInstance()
+
 	response, err := session.Text(&translate.TextInput{
 		SourceLanguageCode: aws.String("auto"),
 		TargetLanguageCode: aws.String(TARGET_LANGUAGE),
@@ -32,20 +35,12 @@ func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
 	if err != nil {
 		fmt.Println("Error executing 'trnsl8 to': \n", err)
 	} else {
-		var parsedJson map[string]interface{}
-
 		var jsonbytes, _ = json.Marshal(response)
-		err := json.Unmarshal(jsonbytes, &parsedJson)
+		err := json.Unmarshal(jsonbytes, &translationResult)
 
 		if err != nil {
-			fmt.Println(response)
+			fmt.Println(err)
 		}
-
-		translatedText := parsedJson["TranslatedText"]
-		sourceLanguageCode := parsedJson["SourceLanguageCode"]
-
-		fmt.Println("Source language-code:", sourceLanguageCode)
-		fmt.Println("Target language-code:", TARGET_LANGUAGE)
-		fmt.Println("Output:", translatedText)
 	}
+	return translationResult
 }

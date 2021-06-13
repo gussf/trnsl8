@@ -41,9 +41,9 @@ Examples:
 		// --file flag was set, try to open and detect the text in the filepath
 		if fileToDetect != "" {
 			fmt.Println("Detecting most prevalent language in", fileToDetect, "...")
-			result, err := internal.DetectDominantLanguageInFile(fileToDetect)
-			if err != nil {
-				fmt.Println(err)
+			var result = internal.DetectDominantLanguageInFile(fileToDetect)
+			if result.DetectedLanguageCode == "" {
+				fmt.Println("Detection failed")
 				return
 			}
 			fmt.Println(result)
@@ -55,8 +55,8 @@ Examples:
 			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 detect'"))
 		} else {
 			input := strings.Join(args, " ")
-			result, err := internal.DetectDominantLanguageIn(&input)
-			fmt.Println(result, err)
+			result := internal.DetectDominantLanguageIn(&input)
+			fmt.Println(result)
 		}
 	},
 }
