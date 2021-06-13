@@ -1,7 +1,8 @@
-package api
+package internal
 
 import (
 	"fmt"
+	"io/ioutil"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -19,16 +20,24 @@ func GetAWSComprehendSessionInstance() *comprehend.Comprehend {
 	return comprehendSession
 }
 
-func DetectDominantLanguageIn(input *string) {
+func DetectDominantLanguageIn(input *string) (result string, err error) {
 	var session = GetAWSComprehendSessionInstance()
 	response, err := session.DetectDominantLanguage(&comprehend.DetectDominantLanguageInput{
 		Text: input,
 	})
+	result = response.GoString()
+	return result, err
 
+}
+
+func DetectDominantLanguageInFile(filePath string) (result string, err error) {
+
+	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		fmt.Println("Error executing trnsl8 detect: \n", err)
-	} else {
-		fmt.Println(response)
+		return "", fmt.Errorf("failed to open file %s", filePath)
 	}
+	var dataString = string(dat)
+	result, err = DetectDominantLanguageIn(&dataString)
+	return result, err
 
 }

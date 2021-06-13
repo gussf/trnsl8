@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"strings"
 
-	"internal/api"
+	"trnsl8/internal"
 
 	"github.com/spf13/cobra"
 )
@@ -39,7 +39,7 @@ Examples:
 			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 to'"))
 		} else {
 			text := strings.Join(args[1:], " ")
-			api.TranslateToTargetLanguage(args[0], &text)
+			internal.TranslateToTargetLanguage(args[0], &text)
 		}
 	},
 }
