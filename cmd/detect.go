@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"strings"
 
-	"internal/api"
+	"trnsl8/internal"
 
 	"github.com/spf13/cobra"
 )
@@ -41,7 +41,7 @@ Examples:
 		// --file flag was set, try to open and detect the text in the filepath
 		if fileToDetect != "" {
 			fmt.Println("Detecting most prevalent language in", fileToDetect, "...")
-			result, err := api.DetectDominantLanguageInFile(fileToDetect)
+			result, err := internal.DetectDominantLanguageInFile(fileToDetect)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -55,7 +55,7 @@ Examples:
 			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 detect'"))
 		} else {
 			input := strings.Join(args, " ")
-			result, err := api.DetectDominantLanguageIn(&input)
+			result, err := internal.DetectDominantLanguageIn(&input)
 			fmt.Println(result, err)
 		}
 	},
