@@ -42,7 +42,8 @@ func DetectDominantLanguageIn(input *string) model.DetectedLanguage {
 			fmt.Println(err)
 			return detectionResult
 		}
-		detectionResult = resultArray.Languages[0]
+		detectionResult = resultArray.Languages[0] // retrieving only the most prevalent language
+		detectionResult.Score *= 100               // getting value in percentages
 	}
 	return detectionResult
 
@@ -52,7 +53,7 @@ func DetectDominantLanguageInFile(filePath string) model.DetectedLanguage {
 
 	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		fmt.Println("failed to open file %s", filePath)
+		fmt.Printf("Failed to open file [%s]\n", filePath)
 		return model.DetectedLanguage{"", 0}
 	}
 	var dataString = string(dat)
