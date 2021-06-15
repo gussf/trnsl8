@@ -1,7 +1,10 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
+
+	"trnsl8/model"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -19,9 +22,10 @@ func GetAWSTranslateSessionInstance() *translate.Translate {
 	return translateSession
 }
 
-func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
-
+func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) model.TranslationResult {
+	var translationResult = model.TranslationResult{"", "", ""}
 	var session = GetAWSTranslateSessionInstance()
+
 	response, err := session.Text(&translate.TextInput{
 		SourceLanguageCode: aws.String("auto"),
 		TargetLanguageCode: aws.String(TARGET_LANGUAGE),
@@ -29,9 +33,14 @@ func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) {
 	})
 
 	if err != nil {
-		fmt.Println("Error executing trnsl8 to: \n", err)
+		fmt.Println("Error executing 'trnsl8 to': \n", err)
 	} else {
-		fmt.Println(response)
-	}
+		var jsonbytes, _ = json.Marshal(response)
+		err := json.Unmarshal(jsonbytes, &translationResult)
 
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	return translationResult
 }

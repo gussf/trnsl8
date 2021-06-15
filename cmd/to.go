@@ -39,7 +39,8 @@ Examples:
 			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 to'"))
 		} else {
 			text := strings.Join(args[1:], " ")
-			internal.TranslateToTargetLanguage(args[0], &text)
+			result := internal.TranslateToTargetLanguage(args[0], &text)
+			fmt.Println(result)
 		}
 	},
 }
