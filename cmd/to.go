@@ -21,9 +21,16 @@ import (
 	"strings"
 
 	"trnsl8/internal"
+	"trnsl8/model"
 
 	"github.com/spf13/cobra"
 )
+
+var fileToTranslate = ""
+var outputFile = ""
+var targetLanguage = ""
+var result = model.TranslationResult{"", "", ""}
+var err = errors.New("")
 
 // toCmd represents the to command
 var toCmd = &cobra.Command{
@@ -33,13 +40,50 @@ var toCmd = &cobra.Command{
 The trnsl8 'to' command expects you to provide a language code and the text you wish to be translated
 Examples:
 	trnsl8 to en "Quero traduzir esta frase"
-	trnsl8 to ja I want this sentence in japanese`,
+	trnsl8 to ja I want this sentence in japanese
+	trnsl8 to es -f file.txt -o translation.txt`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
+
+		if len(args) == 0 {
 			fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 to'"))
+			return
+		}
+		targetLanguage = args[0]
+
+		// --file flag was set, try to open and translate from file
+		if fileToTranslate != "" {
+			fmt.Println("Translating text from ", fileToTranslate, "...")
+			result, err = internal.TranslateToTargetLanguageFromFile(targetLanguage, fileToTranslate)
 		} else {
-			text := strings.Join(args[1:], " ")
-			result := internal.TranslateToTargetLanguage(args[0], &text)
+			if len(args) < 2 {
+				fmt.Println(errors.New("insufficient number of arguments provided to command 'trnsl8 to'"))
+			} else {
+				text := strings.Join(args[1:], " ")
+				result, err = internal.TranslateToTargetLanguage(targetLanguage, &text)
+			}
+
+		}
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		// If flag --output was specified, save output to file
+		if outputFile != "" {
+			fmt.Println("Writing translation into", outputFile, "...")
+
+			_, err = internal.WriteTranslationToFile(result, outputFile)
+
+			if err != nil {
+				fmt.Println(err)
+				fmt.Println("\n---------- WARNING: Translation result could NOT be saved to output file ----------")
+				fmt.Println(result)
+			} else {
+				fmt.Println("Success")
+			}
+
+		} else {
 			fmt.Println(result)
 		}
 	},
@@ -47,15 +91,6 @@ Examples:
 
 func init() {
 	rootCmd.AddCommand(toCmd)
-	toCmd.Flags().BoolP("verbose", "v", false, "Print additional info during translation")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// toCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// toCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	toCmd.PersistentFlags().StringVarP(&fileToTranslate, "file", "f", "", "Translate from a specific file")
+	toCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "", "File in which to write the resulting translation")
 }

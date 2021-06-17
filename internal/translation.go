@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"trnsl8/model"
 
@@ -22,7 +23,7 @@ func GetAWSTranslateSessionInstance() *translate.Translate {
 	return translateSession
 }
 
-func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) model.TranslationResult {
+func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) (model.TranslationResult, error) {
 	var translationResult = model.TranslationResult{"", "", ""}
 	var session = GetAWSTranslateSessionInstance()
 
@@ -32,15 +33,37 @@ func TranslateToTargetLanguage(TARGET_LANGUAGE string, text *string) model.Trans
 		Text:               text,
 	})
 
-	if err != nil {
-		fmt.Println("Error executing 'trnsl8 to': \n", err)
-	} else {
+	if err == nil {
 		var jsonbytes, _ = json.Marshal(response)
-		err := json.Unmarshal(jsonbytes, &translationResult)
-
-		if err != nil {
-			fmt.Println(err)
-		}
+		err = json.Unmarshal(jsonbytes, &translationResult)
 	}
-	return translationResult
+
+	return translationResult, err
+}
+
+func TranslateToTargetLanguageFromFile(TARGET_LANGUAGE string, filePath string) (model.TranslationResult, error) {
+
+	dat, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Printf("Failed to open file [%s]\n", filePath)
+		return model.TranslationResult{"", "", ""}, err
+	}
+	var dataString = string(dat)
+	return TranslateToTargetLanguage(TARGET_LANGUAGE, &dataString)
+}
+
+func WriteTranslationToFile(translationResult model.TranslationResult, filePath string) (string, error) {
+
+	dataToWrite := fmt.Sprintf("Source [%s]\nTarget [%s]\n\n%s\n",
+		translationResult.SourceLanguage,
+		translationResult.TargetLanguage,
+		translationResult.Translation)
+
+	byteData := []byte(dataToWrite)
+	err := ioutil.WriteFile(filePath, byteData, 0644)
+	if err != nil {
+		fmt.Printf("Failed to write to file [%s]\n", filePath)
+		return "Failed", err
+	}
+	return "Success", nil
 }
