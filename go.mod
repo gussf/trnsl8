@@ -1,4 +1,4 @@
-module trnsl8
+module github.com/trnsl8
 
 go 1.16
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"trnsl8/model"
+	"github.com/trnsl8/model"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
