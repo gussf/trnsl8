@@ -16,7 +16,7 @@ limitations under the License.
 package main
 
 import (
-	"github.com/trnsl8/cmd"
+	"github.com/gussf/trnsl8/cmd"
 )
 
 func main() {

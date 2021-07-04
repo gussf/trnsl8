@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/trnsl8/internal"
-	"github.com/trnsl8/model"
+	"github.com/gussf/trnsl8/internal"
+	"github.com/gussf/trnsl8/model"
 
 	"github.com/spf13/cobra"
 )
