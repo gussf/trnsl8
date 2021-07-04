@@ -3,6 +3,14 @@ trnsl8 is a CLI written in Go (using Cobra package) that allows users to transla
 
 <br>
 
+
+## Installation
+```sh
+go get -u github.com/trnsl8
+```
+
+<br>
+  
 ## Usage
 
 
