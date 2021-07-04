@@ -6,7 +6,7 @@ trnsl8 is a CLI written in Go (using Cobra package) that allows users to transla
 
 ## Installation
 ```sh
-go get -u github.com/trnsl8
+go get -u github.com/gussf/trnsl8
 ```
 
 <br>
